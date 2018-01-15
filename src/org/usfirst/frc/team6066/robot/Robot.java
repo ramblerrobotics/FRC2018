@@ -46,7 +46,7 @@ public class Robot extends SampleRobot {
 			
 			SmartDashboard.putBoolean("Compressor Status", c.enabled());
 			SmartDashboard.putBoolean("Pressure Switch", c.getPressureSwitchValue());
-			SmartDashboard.putDouble("Compressor Current", c.getCompressorCurrent());
+			SmartDashboard.putNumber("Compressor Current", c.getCompressorCurrent());
 		}
 	}
 
