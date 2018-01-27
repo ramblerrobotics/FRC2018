@@ -8,9 +8,11 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -21,14 +23,25 @@ public class Robot extends SampleRobot {
 	Compressor c;
 	DoubleSolenoid n;
 	Timer t;
+	CommonDrive gay;
+	Joystick stick2;
+	
+	Victor[] left = new Victor[2];
+	Victor[] right = new Victor[2];
 	
 	public Robot() {
 		try {
 			ahrs = new AHRS(SPI.Port.kMXP);
-			drive = new RobotDrive(0, 1, 2, 3);
 			stick = new Joystick(0);
 			c = new Compressor(0);
 			n = new DoubleSolenoid(0, 3);
+			
+			left[0] = new Victor(0);
+			left[1] = new Victor(3);
+			right[0] = new Victor(1);
+			right[1] = new Victor(2);
+			
+			
 		} catch(RuntimeException e) {
 			DriverStation.reportError("fix this: " + e.getMessage(), true);
 			
@@ -40,14 +53,11 @@ public class Robot extends SampleRobot {
 		c.setClosedLoopControl(true);
 		while(isOperatorControl() && isEnabled()) {
 			t.delay(0.020);
-			drive.tankDrive(stick.getRawAxis(1) / 1.5, stick.getRawAxis(3) / 1.5);
-			if(stick.getRawButton(3)) n.set(DoubleSolenoid.Value.kForward);
-			if(stick.getRawButton(4)) n.set(DoubleSolenoid.Value.kReverse);
-			
-			SmartDashboard.putBoolean("Compressor Status", c.enabled());
-			SmartDashboard.putBoolean("Pressure Switch", c.getPressureSwitchValue());
-			SmartDashboard.putNumber("Compressor Current", c.getCompressorCurrent());
+			if (stick.getRawButton(5)) n.set(DoubleSolenoid.Value.kForward);
+			if (stick.getRawButton(6)) n.set(DoubleSolenoid.Value.kReverse);
+
 		}
+							
 	}
 
 }
