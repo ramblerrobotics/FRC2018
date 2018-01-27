@@ -18,16 +18,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends SampleRobot {
 	AHRS ahrs;
-	RobotDrive drive;
 	Joystick stick;
 	Compressor c;
 	DoubleSolenoid n;
 	Timer t;
-	CommonDrive gay;
-	Joystick stick2;
+	DriveTrain drive;
 	
-	Victor[] left = new Victor[2];
-	Victor[] right = new Victor[2];
 	
 	public Robot() {
 		try {
@@ -35,13 +31,7 @@ public class Robot extends SampleRobot {
 			stick = new Joystick(0);
 			c = new Compressor(0);
 			n = new DoubleSolenoid(0, 3);
-			
-			left[0] = new Victor(0);
-			left[1] = new Victor(3);
-			right[0] = new Victor(1);
-			right[1] = new Victor(2);
-			
-			
+			drive = new DriveTrain();
 		} catch(RuntimeException e) {
 			DriverStation.reportError("fix this: " + e.getMessage(), true);
 			
@@ -55,7 +45,7 @@ public class Robot extends SampleRobot {
 			t.delay(0.020);
 			if (stick.getRawButton(5)) n.set(DoubleSolenoid.Value.kForward);
 			if (stick.getRawButton(6)) n.set(DoubleSolenoid.Value.kReverse);
-
+			drive.setMotorSpeeds(stick.getRawAxis(1), stick.getRawAxis(3), 0);
 		}
 							
 	}
