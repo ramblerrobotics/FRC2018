@@ -15,4 +15,26 @@ public class CommonAuto {
 			drive.setMotorSpeeds(speed, speed, 0);
 		}
 	}
+	public void driveBackward(double speed, int time) {
+		t.reset();
+		t.start();
+		if(t.get() < time) {
+			drive.setMotorSpeeds(-speed, -speed, 0);
+		}
+	}
+	public void driveLeft( double speed, int time) {
+		t.reset();
+		t.start();
+		if(t.get() < time) {
+			drive.mecanumLeft(0.5);
+			
+		}
+	}
+	public void driveRight( double speed, int time) {
+		t.reset();
+		t.start();
+		if(t.get() < time) {
+			drive.mecanumRight(0.5);
+		}
+	}
 }
