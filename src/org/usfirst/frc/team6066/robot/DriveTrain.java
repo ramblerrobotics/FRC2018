@@ -12,24 +12,60 @@ public class DriveTrain extends Subsystem {
 	
 	public DriveTrain() {
 		left[0] = new Talon(0); //front left
-		left[1] = new Talon(3); //back left
+		left[1] = new Talon(2); //back left
 		
 		right[0] = new Talon(1); //front right
-		right[1] = new Talon(2); //back right
+		right[1] = new Talon(3); //back right
 		
-		Joystick stick = new Joystick(0);
+		Joystick stick = new Joystick(0);	
 	}
 
-	public void setMotorSpeeds(double xIn, double yIn, double rotation) {
-		left[0].set(xIn + yIn + rotation);
-		right[0].set(-(-xIn + yIn - rotation));
-		left[1].set((-xIn + yIn + rotation));
-		right[1].set(-(xIn + yIn - rotation));
+	public void setMotorSpeeds(double xIn, double yIn, Boolean mL, Boolean mR, double speed) {
+		if(xIn > 0 && yIn > 0) {
+			left[0].set(-speed);
+			left[1].set(-speed);
+			right[0].set(speed);
+			right[1].set(speed);
+		}
+		if(xIn < 0 && yIn < 0) {
+			left[0].set(speed);
+			left[1].set(speed);
+			right[0].set(-speed);
+			right[1].set(-speed);
+		}
+		
+		if(xIn > 0 && yIn < 0) {
+			left[0].set(speed);
+			left[1].set(speed);
+			right[0].set(speed);
+			right[1].set(speed);
+		}
+		
+		if (xIn < 0 && yIn > 0) {
+			left[0].set(-speed);
+			left[1].set(-speed);
+			right[0].set(-speed);
+			right[1].set(-speed);
+		}
+		
+		if (mR) {
+			left[0].set(speed);
+			left[1].set(-speed);
+			right[0].set(speed);
+			right[1].set(-speed);
+		}
+		
+		if (mL) {
+			left[0].set(-speed);
+			left[1].set(speed);
+			right[0].set(-speed);
+			right[1].set(speed);
+		}
 	}
 	
 	public void mecanumRight(double speed) {
-		right[0].set(-speed);
-		right[1].set(speed);
+		
+		
 	}
 	
 	public void mecanumLeft(double speed) {

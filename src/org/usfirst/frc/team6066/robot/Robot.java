@@ -43,9 +43,9 @@ public class Robot extends SampleRobot {
 		c.setClosedLoopControl(true);
 		while(isOperatorControl() && isEnabled()) {
 			t.delay(0.020);
-			if (stick.getRawButton(5)) n.set(DoubleSolenoid.Value.kForward);
-			if (stick.getRawButton(6)) n.set(DoubleSolenoid.Value.kReverse);
-			drive.setMotorSpeeds(stick.getRawAxis(1), stick.getRawAxis(3), 0);
+			//if (stick.getRawButton(5)) n.set(DoubleSolenoid.Value.kForward);
+			//if (stick.getRawButton(6)) n.set(DoubleSolenoid.Value.kReverse);
+			drive.setMotorSpeeds(stick.getRawAxis(1), stick.getRawAxis(5), stick.getRawButton(3), stick.getRawButton(2), stick.getRawAxis(3) / 1.5);
 		}
 							
 	}
