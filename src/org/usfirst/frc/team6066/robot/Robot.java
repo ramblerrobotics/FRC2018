@@ -19,19 +19,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends SampleRobot {
 	AHRS ahrs;
 	Joystick stick;
-	Compressor c;
-	DoubleSolenoid n;
 	Timer t;
 	DriveTrain drive;
+	SolenoidController solenoid;
 	
 	
 	public Robot() {
 		try {
 			ahrs = new AHRS(SPI.Port.kMXP);
 			stick = new Joystick(0);
-			c = new Compressor(0);
-			n = new DoubleSolenoid(0, 3);
 			drive = new DriveTrain();
+			solenoid = new SolenoidController();
 		} catch(RuntimeException e) {
 			DriverStation.reportError("fix this: " + e.getMessage(), true);
 			
@@ -40,12 +38,14 @@ public class Robot extends SampleRobot {
 	}
 	
 	public void operatorControl() {
-		c.setClosedLoopControl(true);
 		while(isOperatorControl() && isEnabled()) {
 			t.delay(0.020);
-			//if (stick.getRawButton(5)) n.set(DoubleSolenoid.Value.kForward);
-			//if (stick.getRawButton(6)) n.set(DoubleSolenoid.Value.kReverse);
 			drive.setMotorSpeeds(stick.getRawAxis(1), stick.getRawAxis(5), stick.getRawButton(3), stick.getRawButton(2), stick.getRawAxis(3) / 1.5);
+			
+			if (stick.getRawButton(4)) solenoid.forward();
+			if (stick.getRawButton(1)) solenoid.reverse();
+			
+			if (!stick.getRawButton(4) || !stick.getRawButton(1)) solenoid.off();
 		}
 							
 	}
