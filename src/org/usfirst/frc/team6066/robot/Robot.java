@@ -22,6 +22,8 @@ public class Robot extends SampleRobot {
 	Timer t;
 	DriveTrain drive;
 	SolenoidController solenoid;
+	Arm arm;
+	Compressor c;
 	
 	
 	public Robot() {
@@ -30,6 +32,8 @@ public class Robot extends SampleRobot {
 			stick = new Joystick(0);
 			drive = new DriveTrain();
 			solenoid = new SolenoidController();
+			c = new Compressor();
+			arm = new Arm();
 		} catch(RuntimeException e) {
 			DriverStation.reportError("fix this: " + e.getMessage(), true);
 			
@@ -38,14 +42,21 @@ public class Robot extends SampleRobot {
 	}
 	
 	public void operatorControl() {
+		c.setClosedLoopControl(true);
 		while(isOperatorControl() && isEnabled()) {
 			t.delay(0.020);
 			drive.setMotorSpeeds(stick.getRawAxis(1), stick.getRawAxis(5), stick.getRawButton(3), stick.getRawButton(2), stick.getRawAxis(3) / 1.5);
 			
 			if (stick.getRawButton(4)) solenoid.forward();
 			if (stick.getRawButton(1)) solenoid.reverse();
+			if (stick.getRawButton(2)) arm.forward(0.2);
+			if (stick.getRawButton(3)) arm.reverse(0.2);
 			
-			if (!stick.getRawButton(4) || !stick.getRawButton(1)) solenoid.off();
+			
+			if (!stick.getRawButton(4) && !stick.getRawButton(1)) solenoid.off();
+			SmartDashboard.putString("Solenoid Value", solenoid.getValue());
+			SmartDashboard.putBoolean("revBlacklist", solenoid.getRevBlacklist());
+			SmartDashboard.putBoolean("fwdBlacklist", solenoid.getFwdBlacklist());
 		}
 							
 	}

@@ -9,6 +9,7 @@ public class DriveTrain extends Subsystem {
 	Talon[] left = new Talon[2];
 	Talon[] right = new Talon[2];
 	Joystick stick;
+	public double speed;
 	
 	public DriveTrain() {
 		left[0] = new Talon(0); //front left
@@ -63,15 +64,10 @@ public class DriveTrain extends Subsystem {
 		}
 	}
 	
-	public void mecanumRight(double speed) {
-		
-		
+	public double getMotorSpeeds() {
+		return speed;
 	}
-	
-	public void mecanumLeft(double speed) {
-		left[0].set(-speed);
-		left[1].set(speed);
-	}
+
 
 	@Override
 	protected void initDefaultCommand() {

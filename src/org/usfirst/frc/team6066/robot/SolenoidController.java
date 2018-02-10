@@ -2,6 +2,8 @@ package org.usfirst.frc.team6066.robot;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.NamedSendable;
 
 public class SolenoidController {
 	Compressor compressor;
@@ -22,5 +24,18 @@ public class SolenoidController {
 	
 	public void off() {
 		n.set(DoubleSolenoid.Value.kOff);
+	}
+	
+	public String getValue() {
+		String val = n.get().toString();
+		return val;
+	}
+	
+	public boolean getRevBlacklist() {
+		return n.isRevSolenoidBlackListed();
+	}
+	
+	public boolean getFwdBlacklist() {
+		return n.isFwdSolenoidBlackListed();
 	}
 }
