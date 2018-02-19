@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SampleRobot;
 
+import java.io.IOException;
+
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Compressor;
@@ -22,8 +24,10 @@ public class Robot extends SampleRobot {
 	Timer t;
 	DriveTrain drive;
 	SolenoidController solenoid;
-	Arm arm;
+	Climber climber;
 	Compressor c;
+	Arm arm;
+	AutoController write;
 	
 	
 	public Robot() {
@@ -33,7 +37,9 @@ public class Robot extends SampleRobot {
 			drive = new DriveTrain();
 			solenoid = new SolenoidController();
 			c = new Compressor();
+			climber = new Climber();
 			arm = new Arm();
+			write = new AutoController();
 		} catch(RuntimeException e) {
 			DriverStation.reportError("fix this: " + e.getMessage(), true);
 			
@@ -45,20 +51,49 @@ public class Robot extends SampleRobot {
 		c.setClosedLoopControl(true);
 		while(isOperatorControl() && isEnabled()) {
 			t.delay(0.020);
-			drive.setMotorSpeeds(stick.getRawAxis(1), stick.getRawAxis(5), stick.getRawButton(3), stick.getRawButton(2), stick.getRawAxis(3) / 1.5);
+			drive.mecanumDrive(stick.getRawAxis(1), stick.getRawAxis(5), stick.getRawButton(3), stick.getRawButton(2), stick.getRawAxis(3) / 1.5);
 			
-			if (stick.getRawButton(4)) solenoid.forward();
-			if (stick.getRawButton(1)) solenoid.reverse();
-			if (stick.getRawButton(2)) arm.forward(0.2);
-			if (stick.getRawButton(3)) arm.reverse(0.2);
+			while(stick.getRawAxis(2) > 0) {
+				if (stick.getRawButton(4)) arm.forward(stick.getRawAxis(2));
+				if (stick.getRawButton(1)) arm.reverse(stick.getRawAxis(2));
+				if (!stick.getRawButton(4) && !stick.getRawButton(1)) arm.stop();
+				if (stick.getRawAxis(2) == 0) {
+					arm.stop();
+					climber.stop();
+					break;
+				}
+				if (stick.getPOV() == 0) climber.forward(stick.getRawAxis(2));
+				if (stick.getPOV() == 180) climber.reverse(stick.getRawAxis(2));
+				if (stick.getPOV() == -1) climber.stop();
+			}
 			
 			
-			if (!stick.getRawButton(4) && !stick.getRawButton(1)) solenoid.off();
+			
+			if(stick.getRawButton(5)) solenoid.forward();
+			if(!stick.getRawButton(5)) solenoid.off();
+			
+			
+			
+			
 			SmartDashboard.putString("Solenoid Value", solenoid.getValue());
 			SmartDashboard.putBoolean("revBlacklist", solenoid.getRevBlacklist());
 			SmartDashboard.putBoolean("fwdBlacklist", solenoid.getFwdBlacklist());
 		}
 							
+	}
+	
+	public void test() {
+		while(isTest() && isEnabled()) {
+			t.delay(0.1);
+			try {
+				write.writeDrive(stick.getPOV());
+				System.out.println(stick.getPOV());
+				write.writeGrab(stick.getRawButton(1));
+				write.writeRaiseArm(stick.getRawButton(2));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

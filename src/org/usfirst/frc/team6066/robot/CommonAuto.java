@@ -5,7 +5,22 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class CommonAuto {
 
-	DriveTrain drive = new DriveTrain();
-	Timer t = new Timer();
+	DriveTrain drive;
+	Timer timer;
+	
+	public CommonAuto() {
+		drive = new DriveTrain();
+		timer = new Timer();
+	}
+	
+	public void driveForwardUntil(double speed, double time) {
+		timer.reset();
+		timer.start();
+		while(timer.get() <= time) {
+		drive.tankDrive(1, 1, speed);
+		}
+	}
+	
+	
 	
 }

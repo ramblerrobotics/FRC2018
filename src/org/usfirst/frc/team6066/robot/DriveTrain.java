@@ -21,7 +21,50 @@ public class DriveTrain extends Subsystem {
 		Joystick stick = new Joystick(0);	
 	}
 
-	public void setMotorSpeeds(double xIn, double yIn, Boolean mL, Boolean mR, double speed) {
+	public void mecanumDrive(double xIn, double yIn, Boolean mL, Boolean mR, double speed) {
+		if(xIn > 0 && yIn > 0) {
+			left[0].set(-speed);
+			left[1].set(-speed);
+			right[0].set(speed);
+			right[1].set(speed);
+		}
+		if(xIn < 0 && yIn < 0) {
+			left[0].set(speed);
+			left[1].set(speed);
+			right[0].set(-speed);
+			right[1].set(-speed);
+		}
+		
+		if(xIn < 0 && yIn > 0) {
+			left[0].set(speed);
+			left[1].set(speed);
+			right[0].set(speed);
+			right[1].set(speed);
+		}
+		
+		if (xIn > 0 && yIn < 0) {
+			left[0].set(-speed);
+			left[1].set(-speed);
+			right[0].set(-speed);
+			right[1].set(-speed);
+		}
+		
+		if (mR) {
+			left[0].set(speed);
+			left[1].set(-speed);
+			right[0].set(speed);
+			right[1].set(-speed);
+		}
+		
+		if (mL) {
+			left[0].set(-speed);
+			left[1].set(speed);
+			right[0].set(-speed);
+			right[1].set(speed);
+		}
+	}
+	
+	public void tankDrive(double xIn, double yIn, double speed) {
 		if(xIn > 0 && yIn > 0) {
 			left[0].set(-speed);
 			left[1].set(-speed);
@@ -47,20 +90,6 @@ public class DriveTrain extends Subsystem {
 			left[1].set(-speed);
 			right[0].set(-speed);
 			right[1].set(-speed);
-		}
-		
-		if (mR) {
-			left[0].set(speed);
-			left[1].set(-speed);
-			right[0].set(speed);
-			right[1].set(-speed);
-		}
-		
-		if (mL) {
-			left[0].set(-speed);
-			left[1].set(speed);
-			right[0].set(-speed);
-			right[1].set(speed);
 		}
 	}
 	
