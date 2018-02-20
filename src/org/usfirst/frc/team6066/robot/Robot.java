@@ -28,7 +28,7 @@ public class Robot extends SampleRobot {
 	Compressor c;
 	Arm arm;
 	AutoController write;
-	
+	CommonAuto auto;
 	
 	public Robot() {
 		try {
@@ -44,6 +44,11 @@ public class Robot extends SampleRobot {
 			DriverStation.reportError("fix this: " + e.getMessage(), true);
 			
 		}
+		
+	}
+	
+	public void teleopPeriodic() {
+		
 		
 	}
 	
@@ -93,6 +98,11 @@ public class Robot extends SampleRobot {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			if(stick.getPOV() == 0) drive.tankDrive(1, 1, 0);
+			if(stick.getPOV() == 180) drive.tankDrive(-1, -1, 0.2);
+			if(stick.getPOV() == 90) drive.mecanumDrive(0, 0, false, true, 0.2);
+			if(stick.getPOV() == 180 + 90) drive.mecanumDrive(0, 0, true, false, 0.2);
+			if(stick.getPOV() == -1) drive.mecanumDrive(0, 0, false, false, 0);
 		}
 	}
 
