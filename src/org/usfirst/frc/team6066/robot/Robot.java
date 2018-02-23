@@ -29,6 +29,7 @@ public class Robot extends SampleRobot {
 	Arm arm;
 	AutoController write;
 	CommonAuto auto;
+	boolean grab;
 	
 	public Robot() {
 		try {
@@ -40,6 +41,12 @@ public class Robot extends SampleRobot {
 			climber = new Climber();
 			arm = new Arm();
 			write = new AutoController();
+			try {
+				auto = new CommonAuto();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch(RuntimeException e) {
 			DriverStation.reportError("fix this: " + e.getMessage(), true);
 			
@@ -74,9 +81,14 @@ public class Robot extends SampleRobot {
 			
 			
 			
-			if(stick.getRawButton(5)) solenoid.forward();
-			if(!stick.getRawButton(5)) solenoid.off();
+			if (stick.getRawButton(5)) grab = true;
+			if (grab) {
+				t.delay(0.020);
+				solenoid.forward();
+				if (stick.getRawButton(5)) grab = false;
+			}
 			
+			if (!grab) solenoid.off();
 			
 			
 			
@@ -88,8 +100,13 @@ public class Robot extends SampleRobot {
 	}
 	
 	public void test() {
+		try {
+			System.out.println(auto.getCharArray());
+		} catch (IOException e1) {
+			System.out.println("Failed to get string");
+		} 
 		while(isTest() && isEnabled()) {
-			t.delay(0.1);
+			t.delay(0.020);
 			try {
 				write.writeDrive(stick.getPOV());
 				System.out.println(stick.getPOV());
@@ -98,11 +115,12 @@ public class Robot extends SampleRobot {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if(stick.getPOV() == 0) drive.tankDrive(1, 1, 0);
-			if(stick.getPOV() == 180) drive.tankDrive(-1, -1, 0.2);
-			if(stick.getPOV() == 90) drive.mecanumDrive(0, 0, false, true, 0.2);
-			if(stick.getPOV() == 180 + 90) drive.mecanumDrive(0, 0, true, false, 0.2);
-			if(stick.getPOV() == -1) drive.mecanumDrive(0, 0, false, false, 0);
+			if(stick.getPOV() == 0) drive.tankDrive(1, 1, 0.3);
+			if(stick.getPOV() == 180) drive.tankDrive(-1, -1, 0.3);
+			if(stick.getPOV() == -1) drive.tankDrive(1, 1, 0);
+ 			if(stick.getPOV() == 90) drive.mecanumDrive(0, 0, false, true, 0.6);
+			if(stick.getPOV() == 180 + 90) drive.mecanumDrive(0, 0, true, false, 0.6);
+			if(stick.getPOV() == -1) drive.mecanumDrive(1, 1, false, false, 0);
 		}
 	}
 

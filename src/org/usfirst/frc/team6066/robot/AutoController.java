@@ -15,6 +15,7 @@ public class AutoController {
 	public AutoController() {
 		try {
 			auto = new File("/home/lvuser/auto.txt");
+			System.out.println("asasas");
 			f = new PrintWriter(auto, "utf-8");
 			System.out.println(auto.getAbsolutePath());
 			flag = '\0';
