@@ -15,7 +15,7 @@ public class AutoController {
 	public AutoController() {
 		try {
 			auto = new File("/home/lvuser/auto.txt");
-			System.out.println("asasas");
+			System.out.println("current file path: ");
 			f = new PrintWriter(auto, "utf-8");
 			System.out.println(auto.getAbsolutePath());
 			flag = '\0';
@@ -24,6 +24,10 @@ public class AutoController {
 			System.out.println(e.toString());
 			System.out.println(auto.getAbsolutePath());
 		}
+	}
+	
+	public void createGUI() {
+		
 	}
 	
 	public void writeDrive(double dir) throws IOException{

@@ -19,20 +19,13 @@ public class CommonAuto {
 	}
 	
 	 public String getCharArray() throws IOException {
-		 char t = (char) r.read();
-		 for (int i = 0; r.read() == -1; i++) {
-			 data.add(r.read())
-		 }
-		 String a = new String(data);
-		return a;
-		
+		 do {
+			 data.add(r.read());
+		 } while(r.read() != -1);
+		 String a = data.toString();
+		 return a;
 	} 
-	
-	public int readDrive() throws IOException {
-		int ins = 9;
-		r.close();
-		return ins;
-	}
+
 	
 	
 	

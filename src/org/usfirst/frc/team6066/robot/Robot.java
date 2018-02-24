@@ -55,6 +55,14 @@ public class Robot extends SampleRobot {
 	}
 	
 	public void teleopPeriodic() {
+		String a = auto.getCharArray();
+		for(int i = 0; i < auto.getCharArray().length() - 1; i++) {
+			t.delay(0.020);
+			if(a.charAt(i) == '0') drive.mecanumDrive(1, 1, false, false, 0.2);
+			if(a.charAt(i) == '1') drive.mecanumDrive(-1, -1, false, false, 0.2);
+			if(a.charAt(i) == '2') drive.mecanumDrive(0, 0, true, false, 0.2);
+			if(a.charAt(i) == '3') drive.mecanumDrive(0, 0, false, true, 0.2);
+		}
 		
 		
 	}
