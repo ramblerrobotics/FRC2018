@@ -6,47 +6,32 @@ import edu.wpi.first.wpilibj.Joystick;
 
 public class AutoController {
 
-	CommonAuto drive;
-	char flag;
 	File auto;
-	PrintWriter f;
-	byte[] commands;
+	PrintWriter writer;
 	
 	public AutoController() {
+		SmartDashboard.putString("auto write", "");
+	}
+	
+	public String getFile() {
+		auto = new File("/home/lvuser/auto/" + SmartDashboard.getString("auto write") + ".txt");
 		try {
-			auto = new File("/home/lvuser/auto.txt");
-			System.out.println("current file path: ");
-			f = new PrintWriter(auto, "utf-8");
-			System.out.println(auto.getAbsolutePath());
-			flag = '\0';
-		} catch(IOException e) {
-			SmartDashboard.putString("test", e.toString());
-			System.out.println(e.toString());
-			System.out.println(auto.getAbsolutePath());
+		auto.createNewFile();
+		if(auto.exists()) {
+			System.out.println(auto.getAbsolutePath() + "Created");
 		}
+		} catch(IOException e) {
+			System.out.println("Failed to create file: " + e.getMessage());
+		}
+		return auto.getAbsolutePath();
 	}
 	
-	public void createGUI() {
-		
+	public void writeFile(String file, int dir) throws FileNotFoundException, UnsupportedEncodingException {
+		writer = new PrintWriter(file, "utf-8");
+		if (dir == 0) writer.write("0");
+		if (dir == 180) writer.write("1");
+		if (dir == 2) writer.write("2");
+		if (dir == 3) writer.write("3");
 	}
-	
-	public void writeDrive(double dir) throws IOException{
-		if(dir == 0) f.write("0");
-		if(dir == 90) f.write("3");
-		if(dir == 180) f.write("1");
-		if (dir == 180 + 90) f.write("2");
-		f.flush();
-	}
-	
-	public void writeRaiseArm(boolean b) throws IOException {
-		if (b) f.write(4);
-		f.flush();
-	}
-	
-	public void writeGrab(boolean b) throws IOException {
-		if (b) f.write(5);
-		f.flush();
-	}
-	
 	
 }

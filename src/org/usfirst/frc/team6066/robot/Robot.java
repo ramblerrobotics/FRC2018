@@ -28,7 +28,7 @@ public class Robot extends SampleRobot {
 	Compressor c;
 	Arm arm;
 	AutoController write;
-	CommonAuto auto;
+	CommonAuto read;
 	boolean grab;
 	
 	public Robot() {
@@ -40,13 +40,6 @@ public class Robot extends SampleRobot {
 			c = new Compressor();
 			climber = new Climber();
 			arm = new Arm();
-			write = new AutoController();
-			try {
-				auto = new CommonAuto();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		} catch(RuntimeException e) {
 			DriverStation.reportError("fix this: " + e.getMessage(), true);
 			
@@ -54,17 +47,16 @@ public class Robot extends SampleRobot {
 		
 	}
 	
+	public void teleopInit() {
+		read = new CommonAuto();
+	}
+	
 	public void teleopPeriodic() {
-		String a = auto.getCharArray();
-		for(int i = 0; i < auto.getCharArray().length() - 1; i++) {
-			t.delay(0.020);
-			if(a.charAt(i) == '0') drive.mecanumDrive(1, 1, false, false, 0.2);
-			if(a.charAt(i) == '1') drive.mecanumDrive(-1, -1, false, false, 0.2);
-			if(a.charAt(i) == '2') drive.mecanumDrive(0, 0, true, false, 0.2);
-			if(a.charAt(i) == '3') drive.mecanumDrive(0, 0, false, true, 0.2);
+		String file = read.getFile();
+		String inst = read.getCharArray(file);
+		for(int i = 0; i < inst.length() - 1; i++) {
+			if (inst.charAt(i) == 0) drive.mecanumDrive(1, 1, false, false, 0.2);
 		}
-		
-		
 	}
 	
 	public void operatorControl() {
@@ -86,9 +78,7 @@ public class Robot extends SampleRobot {
 				if (stick.getPOV() == 180) climber.reverse(stick.getRawAxis(2));
 				if (stick.getPOV() == -1) climber.stop();
 			}
-			
-			
-			
+
 			if (stick.getRawButton(5)) grab = true;
 			if (grab) {
 				t.delay(0.020);
@@ -97,39 +87,20 @@ public class Robot extends SampleRobot {
 			}
 			
 			if (!grab) solenoid.off();
-			
-			
-			
+
 			SmartDashboard.putString("Solenoid Value", solenoid.getValue());
-			SmartDashboard.putBoolean("revBlacklist", solenoid.getRevBlacklist());
-			SmartDashboard.putBoolean("fwdBlacklist", solenoid.getFwdBlacklist());
 		}
 							
 	}
 	
 	public void test() {
-		try {
-			System.out.println(auto.getCharArray());
-		} catch (IOException e1) {
-			System.out.println("Failed to get string");
-		} 
+		write = new AutoController();
+		String file = write.getFile();
 		while(isTest() && isEnabled()) {
 			t.delay(0.020);
-			try {
-				write.writeDrive(stick.getPOV());
-				System.out.println(stick.getPOV());
-				write.writeGrab(stick.getRawButton(1));
-				write.writeRaiseArm(stick.getRawButton(2));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			if(stick.getPOV() == 0) drive.tankDrive(1, 1, 0.3);
-			if(stick.getPOV() == 180) drive.tankDrive(-1, -1, 0.3);
-			if(stick.getPOV() == -1) drive.tankDrive(1, 1, 0);
- 			if(stick.getPOV() == 90) drive.mecanumDrive(0, 0, false, true, 0.6);
-			if(stick.getPOV() == 180 + 90) drive.mecanumDrive(0, 0, true, false, 0.6);
-			if(stick.getPOV() == -1) drive.mecanumDrive(1, 1, false, false, 0);
+			write.writeFile(file, stick.getPOV());
 		}
+
 	}
 
 }
